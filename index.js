@@ -23,13 +23,14 @@ const routerAbi = [
 const tokenAbi = [
   // Only include the necessary parts of the ABI
   "function approve(address spender, uint256 amount) external returns (bool)",
+  "function balanceOf(address) view returns (uint)",
 ];
 
 const router = new ethers.Contract(pancakeRouterAddress, routerAbi, wallet);
 const token = new ethers.Contract(tokenAddress, tokenAbi, wallet);
 
 // Amount to buy in BNB (e.g., 0.01 BNB)
-const buyAmount = ethers.parseUnits("0.01", "ether");
+const buyAmount = ethers.parseUnits("0.0001", "ether");
 
 async function getTokenPrice() {
   const amounts = await router.getAmountsOut(buyAmount, [
@@ -53,7 +54,7 @@ async function buyToken() {
   );
 
   await tx.wait();
-  console.log("Token bought:", tx);
+  console.log("Token bought:", tx.hash);
 }
 
 async function sellToken(tokenAmount) {
@@ -70,13 +71,13 @@ async function sellToken(tokenAmount) {
   );
 
   await tx.wait();
-  console.log("Token sold:", tx);
+  console.log("Token sold:", tx.hash);
 }
 
 async function approveToken(amount) {
   const tx = await token.approve(pancakeRouterAddress, amount);
   await tx.wait();
-  console.log("Token approved:", tx);
+  console.log("Token approved:", tx.hash);
 }
 
 async function executeTrade() {
